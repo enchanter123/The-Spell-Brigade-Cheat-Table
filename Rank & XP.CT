@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="45">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>5</ID>
+      <Description>"[Script] Rank &amp; XP Tracker"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game    : TheSpellBrigade }
+{ Version : V1.0.2.16657}
+{ Author  : enchanter}
+{ Date    : 2026-5-2}
+
+[ENABLE]
+// 1. 寻找特征码并命名为 INJECT
+aobscanmodule(INJECT, GameAssembly.dll, 8B 50 10 E8 94 C8 FF FF)
+alloc(newmem, $1000, INJECT)
+
+label(code)
+label(return)
+globalalloc(pCharacter, 8)
+
+newmem:
+  // 2. 将 rax (角色的基地址) 存入我们定义的永久指针 pCharacter
+  mov [pCharacter], rax
+
+code:
+  // 3. 执行原来的游戏代码
+  mov edx, [rax+10]
+  // 4. 跳回游戏原来的流程
+  jmp return
+
+// 5. 在原始代码位置写入跳转指令，跳往我们写的 newmem
+INJECT:
+  jmp newmem
+  // 这里填充一个 nop 是因为原来的指令加随后的 call 一共 8 字节，jmp 占 5 字节
+  // 保持代码长度对齐（可选，但推荐）
+  db 90 90 90
+
+return:
+registersymbol(INJECT)
+
+[DISABLE]
+// 6. 还原游戏原始代码
+INJECT:
+  // 这里必须填回原本的 8 个字节
+  db 8B 50 10 E8 94 C8 FF FF
+
+unregistersymbol(INJECT)
+dealloc(newmem)
+
+{
+// 原始代码参考：
+// mov edx,[rax+10]
+// call CharacterBadgeDisplay.Show
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"Current character_rank"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>4 Bytes</VariableType>
+      <Address>pCharacter</Address>
+      <Offsets>
+        <Offset>10</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>4</ID>
+      <Description>"Current character_progress"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Float</VariableType>
+      <Address>pCharacter</Address>
+      <Offsets>
+        <Offset>14</Offset>
+      </Offsets>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols>
+    <SymbolEntry>
+      <Name>pCharacter</Name>
+      <Address>202CFDE0000</Address>
+    </SymbolEntry>
+  </UserdefinedSymbols>
+</CheatTable>
