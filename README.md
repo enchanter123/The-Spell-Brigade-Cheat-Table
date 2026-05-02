@@ -2,6 +2,8 @@
 
 这是一个为《The Spell Brigade》(V1.0.2.16657) 制作的 Cheat Engine 修改表。采用 AOB 注入技术，支持动态地址抓取，能够自动追踪并修改当前选中角色的等级和经验进度。
 
+# [![Bilibili](https://img.shields.io/badge/Bilibili-中文图文教程-FB7299?style=for-the-badge&logo=bilibili&logoColor=white)](https://www.bilibili.com/opus/1197707894584246354)
+
 ## 核心功能 (Features)
 
 - **[AOB] Character Data Tracker**: 自动拦截并抓取当前查看角色的内存基址。
